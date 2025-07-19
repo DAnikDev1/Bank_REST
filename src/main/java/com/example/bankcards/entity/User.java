@@ -46,6 +46,12 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Card> cards = new ArrayList<>();
 
+    @Column(name = "non_locked", nullable = false)
+    private Boolean nonLocked = true;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
