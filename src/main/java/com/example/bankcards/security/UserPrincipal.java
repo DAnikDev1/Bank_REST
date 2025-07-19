@@ -8,8 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor
@@ -17,16 +16,29 @@ public class UserPrincipal implements UserDetails, CredentialsContainer {
     private Long id;
     private String email;
     private String password;
-    private Collection<? extends GrantedAuthority> authorities;
+    private Set<? extends GrantedAuthority> authorities;
     private boolean enabled;
     private boolean nonLocked;
 
     public static UserPrincipal build(User user) {
-        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(), authorities, true, true);
+        if (user.getRoles() != null) {
+            user.getRoles().forEach(role -> {
+                authorities.add(new SimpleGrantedAuthority(String.format("ROLE_%s", role.getName())));
+                if (role.getPrivileges() != null) {
+                    role.getPrivileges().forEach(privilege ->
+                            authorities.add(new SimpleGrantedAuthority(privilege.getName())));
+                }
+            });
+        }
+
+        return new UserPrincipal(user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                authorities,
+                user.getEnabled(),
+                user.getNonLocked());
     }
 
     @Override
@@ -67,5 +79,10 @@ public class UserPrincipal implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
         password = null;
+    }
+    public List<String> getAuthoritiesStrings() {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
     }
 }
