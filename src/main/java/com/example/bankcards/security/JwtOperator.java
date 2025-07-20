@@ -1,19 +1,20 @@
 package com.example.bankcards.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtOperator {
     @Value("${bank.security.jwt_secret_key}")
     private String jwtSecretKey;
@@ -56,9 +57,19 @@ public class JwtOperator {
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        UserPrincipal principal = (UserPrincipal) userDetails;
-        final Long tokenUserId = extractUserId(token);
-        return (tokenUserId.equals(principal.getId()) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+    public List<String> extractAuthorities(String token) {
+        return extractClaim(token, claims -> claims.get("authorities", List.class));
     }
 }
