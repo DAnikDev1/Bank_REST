@@ -31,7 +31,7 @@ public class User {
     @Column(name = "first_name", length = 64, nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", length = 64)
+    @Column(name = "last_name", length = 64, nullable = false)
     private String lastName;
 
     @ManyToMany
