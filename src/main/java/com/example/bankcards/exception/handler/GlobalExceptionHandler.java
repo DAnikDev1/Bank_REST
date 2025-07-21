@@ -1,8 +1,6 @@
 package com.example.bankcards.exception.handler;
 
-import com.example.bankcards.exception.DataValidationException;
-import com.example.bankcards.exception.ExistedEntityException;
-import com.example.bankcards.exception.NoAccessException;
+import com.example.bankcards.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,10 +17,25 @@ public class GlobalExceptionHandler {
         log.error("Entity not found exception: {}", e.getMessage());
         return ErrorResponse.builder().message(e.getMessage()).build();
     }
+
+    @ExceptionHandler(EncryptionException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse processEncryptionException(EncryptionException e) {
+        log.error("Encryption exception: {}", e.getMessage());
+        return ErrorResponse.builder().message(e.getMessage()).build();
+    }
+
     @ExceptionHandler(ExistedEntityException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse processExistedEntityException(ExistedEntityException e) {
         log.error("Existed entity exception: {}", e.getMessage());
+        return ErrorResponse.builder().message(e.getMessage()).build();
+    }
+
+    @ExceptionHandler(CardLimitExceededException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse processUnprocessableEntityException(CardLimitExceededException e) {
+        log.error("Unprocessable entity exception: {}", e.getMessage());
         return ErrorResponse.builder().message(e.getMessage()).build();
     }
 

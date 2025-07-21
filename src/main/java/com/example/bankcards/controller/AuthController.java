@@ -28,6 +28,8 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @Operation(summary = "Login existed user")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> loginUser(@Valid @RequestBody LoginUserDto loginDto) {
         LoginResponseDto response = authService.loginUser(loginDto);

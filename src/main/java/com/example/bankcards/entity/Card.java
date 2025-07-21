@@ -24,8 +24,11 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "card_number", nullable = false, unique = true, length = 16)
+    @Column(name = "card_number", nullable = false, unique = true, length = 128)
     private String cardNumber;
+
+    @Column(name = "hashed_card_number", nullable = false, unique = true, length = 128)
+    private String hashedCardNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
