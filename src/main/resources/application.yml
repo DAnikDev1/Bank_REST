@@ -1,14 +1,30 @@
-#
-# application.yml — главный конфигурационный файл Spring Boot.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/bank_service
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: danik
+  liquibase:
+    change-log: classpath:/db/migration/db.changelog-master.yaml
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  application:
+    name: Bank_REST
+
+springdoc:
+  api-docs:
+    enabled: true
+    version: openapi_3_0
+  swagger-ui:
+    enabled: true
 
 bank:
   security:
-    jwt_secret_key: "B3yGhFwQ3fZfeaFZugQLCni1"
+    jwt_secret_key: "mpGBWw4FCX68xYUKCYXtEw3zjNrdH3SE"
     jwt_life_time: 1800000
+    encryption_key: "Bm2x9jMYWL4awra3LzeSWhBEMmpRUeG2"
 
-# Что нужно сделать:
-#  - Указать настройки подключения к базе данных.
-#  - Указать порт приложения.
-#  - Настроить параметры безопасности и JWT.
-#  - Включить Swagger UI.
-
+server:
+  port: 8080

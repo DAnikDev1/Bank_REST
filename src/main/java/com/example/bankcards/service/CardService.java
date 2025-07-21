@@ -12,6 +12,8 @@ import com.example.bankcards.util.CardSequenceUtil;
 import com.example.bankcards.util.EncryptionUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -63,4 +65,17 @@ public class CardService {
         return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
     }
 
+    public Page<ReadCardDto> getAllCards(Pageable pageable) {
+        Page<Card> cardEntitiesPage = cardRepository.findAll(pageable);
+
+        return cardEntitiesPage.map(card -> {
+            ReadCardDto dto = cardMapper.toCardReadDto(card);
+
+            String originalNumber = encryptionUtil.decrypt(card.getCardNumber());
+            String maskedNumber = maskCardNumber(originalNumber);
+
+            dto.setCardNumber(maskedNumber);
+            return dto;
+        });
+    }
 }
