@@ -343,11 +343,29 @@ databaseChangeLog:
             tableName: privileges
             columns:
               - column: { name: name, value: 'READ_OWN_PROFILE' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'CREATE_BLOCK_CARD_REQUEST' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'READ_OWN_CARDS' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'TRANSFER_MONEY' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'READ_ALL_CARDS' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'MANAGE_CARDS' }
+        - insert:
+            tableName: privileges
+            columns:
               - column: { name: name, value: 'MANAGE_USERS' }
   - changeSet:
       id: 12-map-privileges-to-roles

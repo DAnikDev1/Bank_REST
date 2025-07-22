@@ -26,10 +26,11 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('READ_OWN_PROFILE')")
     public ResponseEntity<UserProfileDto> readOwnProfile(Authentication authentication) {
+        log.info("Trying to get profile");
         UserPrincipal currentUser = (UserPrincipal) authentication.getPrincipal();
 
         UserProfileDto userProfile = userService.getUserProfileById(currentUser.getId());
-
+        log.info("User profile: {}", userProfile);
         return ResponseEntity.ok(userProfile);
     }
 }
