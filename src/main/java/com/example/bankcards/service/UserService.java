@@ -1,6 +1,7 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.user.ReadUserDto;
+import com.example.bankcards.dto.user.UserProfileDto;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.UserRepository;
@@ -41,5 +42,15 @@ public class UserService {
         User user = findById(userId);
         user.setEnabled(!user.getEnabled());
         userRepository.save(user);
+    }
+
+
+    public UserProfileDto getUserProfileById(Long id) {
+        User user = findById(id);
+        return userMapper.toUserProfileDto(user);
+    }
+
+    public User getReferenceById(Long userId) {
+        return userRepository.getReferenceById(userId);
     }
 }

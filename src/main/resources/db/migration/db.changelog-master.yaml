@@ -1,0 +1,365 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-users-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: non_locked
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 2-create-roles-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 3-create-privileges-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: privileges
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 4-create-users_roles-join-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_roles_user
+                    references: users(id)
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_roles_role
+                    references: roles(id)
+        - addPrimaryKey:
+            tableName: users_roles
+            columnNames: user_id, role_id
+            constraintName: pk_users_roles
+
+  - changeSet:
+      id: 5-create-roles_privileges-join-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: roles_privileges
+            columns:
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_roles_privileges_role
+                    references: roles(id)
+              - column:
+                  name: privilege_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_roles_privileges_privilege
+                    references: privileges(id)
+        - addPrimaryKey:
+            tableName: roles_privileges
+            columnNames: role_id, privilege_id
+            constraintName: pk_roles_privileges
+
+  - changeSet:
+      id: 6-create-cards-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: cards
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: card_number
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: hashed_card_number
+                  type: VARCHAR(128)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cards_user
+                    references: users(id)
+              - column:
+                  name: expiration
+                  type: VARCHAR(7)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: DECIMAL(19, 2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 7-create-transactions-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: sender_card_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_sender_card
+                    references: cards(id)
+              - column:
+                  name: receiver_card_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_receiver_card
+                    references: cards(id)
+              - column:
+                  name: amount
+                  type: DECIMAL(19, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(128)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 8-create-block_requests-table
+      author: danikdev
+      changes:
+        - createTable:
+            tableName: block_requests
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: card_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_block_requests_card
+                    references: cards(id)
+              - column:
+                  name: reason
+                  type: VARCHAR(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requester_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_block_requests_requester_user
+                    references: users(id)
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: handler_user_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_block_requests_handler_user
+                    references: users(id)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+  - changeSet:
+      id: 9-create-card-number-sequence
+      author: danikdev
+      changes:
+        - createSequence:
+            sequenceName: card_number_seq
+            startValue: 100000000
+            incrementBy: 1
+            cacheSize: 20
+  - changeSet:
+      id: 10-insert-initial-roles
+      author: danikdev
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 'USER'
+
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 'ADMIN'
+  - changeSet:
+      id: 11-insert-initial-privileges
+      author: danikdev
+      changes:
+        - insert:
+            tableName: privileges
+            columns:
+              - column: { name: name, value: 'READ_OWN_PROFILE' }
+              - column: { name: name, value: 'CREATE_BLOCK_CARD_REQUEST' }
+              - column: { name: name, value: 'READ_OWN_CARDS' }
+              - column: { name: name, value: 'TRANSFER_MONEY' }
+              - column: { name: name, value: 'READ_ALL_CARDS' }
+              - column: { name: name, value: 'MANAGE_CARDS' }
+              - column: { name: name, value: 'MANAGE_USERS' }
+  - changeSet:
+      id: 12-map-privileges-to-roles
+      author: danikdev
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO roles_privileges (role_id, privilege_id)
+              SELECT r.id, p.id FROM roles r, privileges p
+              WHERE r.name = 'USER' AND p.name IN ('READ_OWN_CARDS', 'TRANSFER_MONEY', 'READ_OWN_PROFILE', 'CREATE_BLOCK_CARD_REQUEST');
+        - sql:
+            sql: |
+              INSERT INTO roles_privileges (role_id, privilege_id)
+              SELECT r.id, p.id FROM roles r, privileges p
+              WHERE r.name = 'ADMIN' AND p.name IN ('READ_ALL_CARDS', 'MANAGE_CARDS', 'MANAGE_USERS');

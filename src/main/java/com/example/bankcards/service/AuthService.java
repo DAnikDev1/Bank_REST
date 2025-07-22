@@ -5,7 +5,7 @@ import com.example.bankcards.dto.auth.login.LoginUserDto;
 import com.example.bankcards.dto.auth.register.CreateUserDto;
 import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.exception.ExistedEntityException;
+import com.example.bankcards.exception.ConflictException;
 import com.example.bankcards.repository.RoleRepository;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.security.JwtOperator;
@@ -32,7 +32,7 @@ public class AuthService {
     @Transactional
     public void registerUser(CreateUserDto createUserDto) {
         if (userRepository.findByEmail(createUserDto.getEmail()).isPresent()) {
-            throw new ExistedEntityException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
 
         Role userRole = roleRepository.findByName("USER")
@@ -44,6 +44,8 @@ public class AuthService {
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .roles(Collections.singleton(userRole))
+                .nonLocked(true)
+                .enabled(true)
                 .build();
         userRepository.save(user);
     }

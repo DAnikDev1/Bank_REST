@@ -25,16 +25,16 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder().message(e.getMessage()).build();
     }
 
-    @ExceptionHandler(ExistedEntityException.class)
+    @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse processExistedEntityException(ExistedEntityException e) {
+    public ErrorResponse processExistedEntityException(ConflictException e) {
         log.error("Existed entity exception: {}", e.getMessage());
         return ErrorResponse.builder().message(e.getMessage()).build();
     }
 
-    @ExceptionHandler(CardLimitExceededException.class)
+    @ExceptionHandler(UnprocessableEntityException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ErrorResponse processUnprocessableEntityException(CardLimitExceededException e) {
+    public ErrorResponse processUnprocessableEntityException(UnprocessableEntityException e) {
         log.error("Unprocessable entity exception: {}", e.getMessage());
         return ErrorResponse.builder().message(e.getMessage()).build();
     }

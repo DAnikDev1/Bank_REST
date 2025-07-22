@@ -1,9 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/bank_service
+    url: jdbc:postgresql://localhost:5432/bank_service
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: danik
   liquibase:
     change-log: classpath:/db/migration/db.changelog-master.yaml
 

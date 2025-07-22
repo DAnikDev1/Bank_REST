@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.util.YearMonthAttributeConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class Card {
     private User owner;
 
     @Column(name = "expiration", nullable = false)
+    @Convert(converter = YearMonthAttributeConverter.class)
     private YearMonth expiration;
 
     @Enumerated(EnumType.STRING)

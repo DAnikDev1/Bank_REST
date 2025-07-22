@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
-    Page<Card> findAllByOwnerId(Long ownerId, Pageable pageable);
+    Page<Card> findAllByOwnerId(Long userId, Pageable pageable);
     Optional<Card> findByHashedCardNumber(String hashedCardNumber);
     long countByOwner(User owner);
 }
